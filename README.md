@@ -74,7 +74,8 @@ You can adjust the behavior of `objcheck` with the following environment variabl
 * **OUT_FILE** to set the name of a temporary output file
 * **GNUSTEP_INCLUDE** to set the include path of GNUstep
 * **GNUSTEP_LIB** to set the lib path of GNUstep
-* **CFLAGS** to set custom include paths and compiler flags
+* **CFLAGS** to set custom include paths and compiler flags for C
+* **CXXFLAGS** to set custom include paths and compiler flags for C++
 * **LDFLAGS** to set custom lib paths
 * **LIBS** to set custom library linkages
 
