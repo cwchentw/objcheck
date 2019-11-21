@@ -4,7 +4,7 @@
 
 ## Why `objcheck`?
 
-Currently, the major Objective-C compilers, Clang and GCC, are not totally compatible. If wanting to check compiler compatibility for our Objective-C code base, we have to compile it twice.
+Currently, the major Objective-C compilers, Clang and GCC, are not totally compatible at code level. If wanting to check compiler compatibility for our Objective-C code base, we have to compile it twice.
 
 It is tedious to write Makefile or another project configuration file for each code base. To address this issue, `objcheck` automatically tests your code base against both Clang and GCC without any project configuration file.
 
