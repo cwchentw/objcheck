@@ -67,18 +67,18 @@ $ objcheck help
 
 You can adjust the behavior of `objcheck` with the following environment variables:
 
-* **GCC** sets GCC compiler
-* **GPP** sets G++ compiler
-* **CLANG** sets Clang compiler
-* **CLANGPP** sets Clang++ compiler
-* **OUT_FILE** sets the name of a temporary output file
-* **GNUSTEP_INCLUDE** sets the include path of GNUstep
-* **GNUSTEP_LIB** sets the lib path of GNUstep
-* **CFLAGS** sets custom include paths and compiler flags
-* **LDFLAGS** sets custom lib paths
-* **LIBS** sets custom library linkages
+* **GCC** to set GCC compiler
+* **GPP** to set G++ compiler
+* **CLANG** to set Clang compiler
+* **CLANGPP** to set Clang++ compiler
+* **OUT_FILE** to set the name of a temporary output file
+* **GNUSTEP_INCLUDE** to set the include path of GNUstep
+* **GNUSTEP_LIB** to set the lib path of GNUstep
+* **CFLAGS** to set custom include paths and compiler flags
+* **LDFLAGS** to set custom lib paths
+* **LIBS** to set custom library linkages
 
-All environment variables are optional, with sensible default values.
+All environment variables are optional, set with sensible default values.
 
 ## License
 
