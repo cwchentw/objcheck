@@ -22,6 +22,17 @@ It is tedious to write Makefile or another project configuration file for each c
 
 We tested `objcheck` on Ubuntu 18.04 LTS. It should work on other Unix-like OSes as well.
 
+## Supported File Formats
+
+`objcheck` supports the following file extensions:
+
+* *.m* for Objective-C source
+* *.mm* for Objective-C++ source
+* *.c* for C source
+* *.cpp*, *.cxx* or *.cc* for C++ source
+
+They are possible languages used in Objective-C projects.
+
 ## Usage
 
 Just copy `objcheck` to a valid **$PATH** like **$HOME**/bin to use it.
@@ -49,13 +60,6 @@ Check for a dynamic library:
 ```
 $ objcheck dynamic path/to/*.m
 ```
-
-`objcheck` supports the following file extensions:
-
-* *.m* for Objective-C source
-* *.mm* for Objective-C++ source
-* *.c* for C source
-* *.cpp*, *.cxx* or *.cc* for C++ source
 
 Show help info:
 
