@@ -2,7 +2,7 @@
 # Author: Michael Chen  License: MIT
 
 program="$0"
-version="0.3.1"
+version="0.3.2"
 
 version () {
     echo $version
@@ -146,21 +146,21 @@ clean () {
 }
 
 # Check whether GCC exists on the host.
-gcc --version > /dev/null
+$GCC --version > /dev/null
 if [ "$?" -ne 0 ]; then
     echo "Please install gcc and gobjc";
     exit 1;
 fi
 
 # Check whether `g++` exists on the host.
-g++ --version > /dev/null
+$GPP --version > /dev/null
 if [ "$?" -ne 0 ]; then
     echo "Please install g++";
     exit 1;
 fi
 
 # Check whether Clang exists on the host.
-clang --version > /dev/null
+$CLANG --version > /dev/null
 if [ "$?" -ne 0 ]; then
     echo "Please install clang";
     exit 1;
