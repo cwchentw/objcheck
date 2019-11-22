@@ -35,7 +35,13 @@ They are possible languages used in Objective-C projects.
 
 ## Usage
 
-Just copy `objcheck` to a valid **$PATH** like **$HOME**/bin to use it.
+Before using `objcheck`, add executable mode to it:
+
+```
+$ chmod +x path/to/objcheck
+```
+
+Then, copy `objcheck` to a valid **$PATH** like *$HOME/bin* to use it.
 
 Check against single Objective-C file:
 
