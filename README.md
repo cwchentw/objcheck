@@ -1,6 +1,6 @@
 # objcheck
 
-`objcheck` tests Objective-C and Objective-C++ code against both Clang and GCC automatically.
+`objcheck`, aka Objective-C Check, tests Objective-C and Objective-C++ code against both Clang and GCC automatically.
 
 ## Why `objcheck`?
 
