@@ -4,7 +4,7 @@
 
 ## Warning
 
-`objcheck` checks target source by compiling and executing it. Hence, DON'T use `objcheck` against untrusted source.
+`objcheck` checks target source by compiling and executing it. Hence, DON'T use `objcheck` to test untrusted source.
 
 ## Why `objcheck`?
 
@@ -18,7 +18,7 @@ It is tedious to write Makefile or another project configuration file for each c
 
 `objcheck` itself is implemented in POSIX shell. Besides a shell, you need
 
-* GCC with GObjC
+* GCC with Objective-C support
 * Clang
 * GNUstep
 
@@ -47,13 +47,13 @@ $ chmod +x path/to/objcheck
 
 Then, copy `objcheck` to a valid **$PATH** like *$HOME/bin* to use it.
 
-Check against single Objective-C file:
+Check single file:
 
 ```
 $ objcheck path/to/file.m
 ```
 
-Check against several files:
+Check multiple files in a project:
 
 ```
 $ objcheck path/to/*.m
