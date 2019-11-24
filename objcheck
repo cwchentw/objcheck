@@ -2,25 +2,28 @@
 # Author: Michael Chen  License: MIT
 
 program="$0"
-version="0.3.2"
+version="0.3.6"
+license="MIT"
 
 version () {
     echo $version
 }
 
+license () {
+    echo $license
+}
+
 help () {
-    echo "Usage: ${program} [action] file.m ..."
+    echo "Usage: ${program} [command] ..."
+    echo "       ${program} help [command]"
     echo ""
-    echo "Actions:"
+    echo "Commands:"
     echo "\tversion\t\tShow version info and exit"
+    echo "\tlicense\t\tShow license info and exit"
     echo "\thelp\t\tShow help info and exit"
     echo "\tapplication\tCompile an application (default)"
     echo "\tstatic\t\tCompile a static library"
     echo "\tdynamic\t\tCompile a dynamic library"
-    echo ""
-    echo "Options:"
-    echo "\t-v\t--version\tPrint version info and exit"
-    echo "\t-h\t--help\t\tPrint help info and exit"
     echo ""
     echo "Environment variables:"
     echo "\tGCC\t\t\tSet GCC compiler"
@@ -34,6 +37,42 @@ help () {
     echo "\tCXXFLAGS\t\tCusteom include paths and compiler flags for C++"
     echo "\tLDFLAGS\t\t\tCustom library paths"
     echo "\tLIBS\t\t\tCustom library linkage"
+}
+
+help_version () {
+    echo "Usage: $program version"
+    echo ""
+    echo "Show version info and exit"
+}
+
+help_license () {
+    echo "Usage: $program license"
+    echo ""
+    echo "Show license info and exit"
+}
+
+help_help () {
+    echo "Usage: $program help [command]"
+    echo ""
+    echo "Show help info for [command] and exit"
+}
+
+help_application () {
+    echo "Usage: $program [application] main.m ..."
+    echo ""
+    echo "Test an application against both GCC and Clang"
+}
+
+help_static () {
+    echo "Usage: $program static lib.m ..."
+    echo ""
+    echo "Test a static library against both GCC and Clang"
+}
+
+help_dynamic () {
+    echo "Usage: $program dynamic lib.m ..."
+    echo ""
+    echo "Test a dynamic library against both GCC and Clang"
 }
 
 check_ext () {
@@ -64,7 +103,7 @@ check_ext () {
 
 check_file_type () {
     FILE_EXT=$1
-    
+
     if [ "$FILE_EXT" = ".m" ]; then
         echo "objective-c"
     elif [ "$FILE_EXT" = ".mm" ]; then
@@ -79,23 +118,48 @@ check_file_type () {
     fi
 }
 
-action=$1
-if [ "$action" = "version" ]; then
+cmd=$1
+if [ "$cmd" = "version" ]; then
     version;
     exit 0;
 fi
 
-if [ "$action" = "help" ]; then
-    help;
+if [ "$cmd" = "license" ]; then
+    license;
     exit 0;
 fi
 
-if [ "$action" = "application" ] || [ "$action" = "static" ] || [ "$action" = "dynamic" ]; then
+if [ "$cmd" = "help" ]; then
+    subcmd=$2
+
+    if [ "$subcmd" = "version" ]; then
+        help_version;
+    elif [ "$subcmd" = "license" ]; then
+        help_license;
+    elif [ "$subcmd" = "help" ]; then
+        help_help;
+    elif [ "$subcmd" = "application" ]; then
+        help_application;
+    elif [ "$subcmd" = "static" ]; then
+        help_static;
+    elif [ "$subcmd" = "dynamic" ]; then
+        help_dynamic;
+    elif [ "$subcmd" = "" ]; then
+        help;
+    else
+        echo "Unknown subcommand";
+        exit 1;
+    fi
+
+    exit 0;
+fi
+
+if [ "$cmd" = "application" ] || [ "$cmd" = "static" ] || [ "$cmd" = "dynamic" ]; then
     shift;
 fi
 
-if [ "$action" != "application" ] && [ "$action" != "static" ] && [ "$action" != "dynamic" ]; then
-    action="application";
+if [ "$cmd" != "application" ] && [ "$cmd" != "static" ] && [ "$cmd" != "dynamic" ]; then
+    cmd="application";
 fi
 
 GCC=$GCC
@@ -187,9 +251,10 @@ EOF
 # Check whether GNUstep exists on the host.
 temp="$(mktemp --suffix .m)"
 echo "$helloworld" > $temp
-$GCC -o $dest $temp -lobjc -lgnustep-base -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB \
+$GCC -o $dest $temp -lobjc -lgnustep-base $LIBS $CFLAGS \
+    -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $LDFLAGS \
     -fconstant-string-class=NSConstantString -fobjc-exceptions
-./$dest > /dev/null 2>&1
+LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1
 
 if [ "$?" -ne 0 ]; then
     echo "Please install GNUstep";
@@ -226,9 +291,10 @@ EOFPP
 # Check GNUstep with Objective-C++ on the host.
 temp="$(mktemp --suffix .mm)"
 echo "$helloworldpp" > $temp
-$GPP -o $dest $temp -lobjc -lgnustep-base -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB \
+$GPP -o $dest $temp -lobjc -lgnustep-base $LIBS $CXXFLAGS \
+    -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $LDFLAGS \
     -fconstant-string-class=NSConstantString -fobjc-exceptions
-./$dest > /dev/null 2>&1
+LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1
 
 if [ "$?" -ne 0 ]; then
     echo "Please install GNUstep and/or g++";
@@ -247,7 +313,7 @@ if [ -z "$1" ]; then
 fi
 
 # Test the program with GCC.
-if [ "$action" = "application" ]; then
+if [ "$cmd" = "application" ]; then
     IS_CPP=0
     OBJS=
     for file in "$@"; do
@@ -277,8 +343,8 @@ if [ "$action" = "application" ]; then
     fi
     $GCC -o $dest $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
         -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString
-    ./$dest
-elif [ "$action" = "dynamic" ]; then
+    LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest
+elif [ "$cmd" = "dynamic" ]; then
     IS_CPP=0
     OBJS=
     for file in "$@"; do
@@ -308,7 +374,7 @@ elif [ "$action" = "dynamic" ]; then
     fi
     $GCC -shared -o "lib${dest}.so" $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
         -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString -fobjc-exceptions
-elif [ "$action" = "static" ]; then
+elif [ "$cmd" = "static" ]; then
     objs=
     for file in "$@"; do
         FILE_EXT=$(check_ext $file | cat)
@@ -344,7 +410,7 @@ clean;
 # Test the program with Clang.
 gccVer=$(gcc --version | head -n1 | awk '{ print $4; }')
 
-if [ "$action" = "application" ]; then
+if [ "$cmd" = "application" ]; then
     IS_CPP=0
     OBJS=
     for file in "$@"; do
@@ -377,8 +443,8 @@ if [ "$action" = "application" ]; then
     $CLANG -o $dest $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
         -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
         $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString
-    ./$dest
-elif [ "$action" = "dynamic" ]; then
+    LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest
+elif [ "$cmd" = "dynamic" ]; then
     IS_CPP=0
     OBJS=
     for file in "$@"; do
@@ -411,7 +477,7 @@ elif [ "$action" = "dynamic" ]; then
     $CLANG -shared -o "lib${dest}.so" $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
         -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
         $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString -fobjc-exceptions
-elif [ "$action" = "static" ]; then
+elif [ "$cmd" = "static" ]; then
     IS_CPP=0
     OBJS=
     for file in "$@"; do
