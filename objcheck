@@ -360,7 +360,7 @@ if [ "$cmd" = "application" ]; then
             args="$args $arg"
         fi
     done
-    LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest $args
+    LD_LIBRARY_PATH=$GNUSTEP_LIB:$LD_LIBRARY_PATH ./$dest $args
 elif [ "$cmd" = "dynamic" ]; then
     IS_CPP=0
     OBJS=
@@ -477,7 +477,7 @@ if [ "$cmd" = "application" ]; then
             args="$args $arg"
         fi
     done
-    LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest $args
+    LD_LIBRARY_PATH=$GNUSTEP_LIB:$LD_LIBRARY_PATH ./$dest $args
 elif [ "$cmd" = "dynamic" ]; then
     IS_CPP=0
     OBJS=
