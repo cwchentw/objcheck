@@ -98,7 +98,7 @@ check_ext () {
         ;;
     *)
         echo "Unsupported file: $1"
-        false
+        exit 1
     esac
 }
 
@@ -118,7 +118,7 @@ check_file_type () {
         ;;
     *)
         echo "Unknown file extension: $FILE_EXT"
-        false
+        exit 1
         ;;
     esac
 }
@@ -126,12 +126,12 @@ check_file_type () {
 cmd=$1
 if [ "$cmd" = "version" ]; then
     version;
-    true
+    exit 0
 fi
 
 if [ "$cmd" = "license" ]; then
     license;
-    true
+    exit 0
 fi
 
 if [ "$cmd" = "help" ]; then
@@ -153,10 +153,10 @@ if [ "$cmd" = "help" ]; then
         help;
     else
         echo "Unknown subcommand";
-        false
+        exit 1
     fi
 
-    true
+    exit 0
 fi
 
 if [ "$cmd" = "application" ] || [ "$cmd" = "static" ] || [ "$cmd" = "dynamic" ]; then
@@ -207,7 +207,7 @@ fi
 
 if [ -f "$dest" ] || [ -d "$dest" ]; then
     echo "File ${dest} exists in directory"
-    false
+    exit 1
 fi
 
 clean () {
@@ -218,21 +218,21 @@ clean () {
 $GCC --version > /dev/null
 if [ "$?" -ne 0 ]; then
     echo "Please install gcc and gobjc";
-    false
+    exit 1
 fi
 
 # Check whether `g++` exists on the host.
 $GPP --version > /dev/null
 if [ "$?" -ne 0 ]; then
     echo "Please install g++";
-    false
+    exit 1
 fi
 
 # Check whether Clang exists on the host.
 $CLANG --version > /dev/null
 if [ "$?" -ne 0 ]; then
     echo "Please install clang";
-    false
+    exit 1
 fi
 
 helloworld=$(cat << EOF
@@ -264,7 +264,7 @@ LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
     echo "Please install GNUstep";
     rm -f $dest
-    false
+    exit 1
 fi
 
 rm -f $dest
@@ -304,7 +304,7 @@ LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
     echo "Please install GNUstep and/or g++";
     rm -f $dest
-    false
+    exit 1
 fi
 
 rm -f $dest
@@ -313,8 +313,8 @@ rm -f $dest
 src="$@"
 
 if [ -z "$1" ]; then
-    echo "No input file";
-    exit 1;
+    echo "No input file"
+    exit 1
 fi
 
 # Test the program with GCC.
@@ -424,7 +424,7 @@ fi
 if [ "$?" -ne 0 ]; then
     echo "Wrong program compiled by GCC";
     clean
-    false
+    exit 1
 fi
 
 clean
@@ -552,9 +552,9 @@ fi
 if [ "$?" -ne 0 ]; then
     echo "Wrong program compiled by Clang";
     clean
-    false
+    exit 1
 fi
 
 clean
 
-true
+exit 0
