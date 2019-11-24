@@ -98,7 +98,7 @@ check_ext () {
         ;;
     *)
         echo "Unsupported file: $1"
-        exit 1
+        false
     esac
 }
 
@@ -118,19 +118,20 @@ check_file_type () {
         ;;
     *)
         echo "Unknown file extension: $FILE_EXT"
-        exit 1
+        false
+        ;;
     esac
 }
 
 cmd=$1
 if [ "$cmd" = "version" ]; then
     version;
-    exit 0;
+    true
 fi
 
 if [ "$cmd" = "license" ]; then
     license;
-    exit 0;
+    true
 fi
 
 if [ "$cmd" = "help" ]; then
@@ -152,10 +153,10 @@ if [ "$cmd" = "help" ]; then
         help;
     else
         echo "Unknown subcommand";
-        exit 1;
+        false
     fi
 
-    exit 0;
+    true
 fi
 
 if [ "$cmd" = "application" ] || [ "$cmd" = "static" ] || [ "$cmd" = "dynamic" ]; then
@@ -206,7 +207,7 @@ fi
 
 if [ -f "$dest" ] || [ -d "$dest" ]; then
     echo "File ${dest} exists in directory"
-    exit 1
+    false
 fi
 
 clean () {
@@ -217,21 +218,21 @@ clean () {
 $GCC --version > /dev/null
 if [ "$?" -ne 0 ]; then
     echo "Please install gcc and gobjc";
-    exit 1;
+    false
 fi
 
 # Check whether `g++` exists on the host.
 $GPP --version > /dev/null
 if [ "$?" -ne 0 ]; then
     echo "Please install g++";
-    exit 1;
+    false
 fi
 
 # Check whether Clang exists on the host.
 $CLANG --version > /dev/null
 if [ "$?" -ne 0 ]; then
     echo "Please install clang";
-    exit 1;
+    false
 fi
 
 helloworld=$(cat << EOF
@@ -263,7 +264,7 @@ LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
     echo "Please install GNUstep";
     rm -f $dest
-    exit 1;
+    false
 fi
 
 rm -f $dest
@@ -303,7 +304,7 @@ LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1
 if [ "$?" -ne 0 ]; then
     echo "Please install GNUstep and/or g++";
     rm -f $dest
-    exit 1;
+    false
 fi
 
 rm -f $dest
@@ -422,11 +423,11 @@ fi
 
 if [ "$?" -ne 0 ]; then
     echo "Wrong program compiled by GCC";
-    clean;
-    exit 1;
+    clean
+    false
 fi
 
-clean;
+clean
 
 # Test the program with Clang.
 gccVer=$(gcc --version | head -n1 | awk '{ print $4; }')
@@ -550,10 +551,10 @@ fi
 
 if [ "$?" -ne 0 ]; then
     echo "Wrong program compiled by Clang";
-    clean;
-    exit 1;
+    clean
+    false
 fi
 
-clean;
+clean
 
-exit 0;
+true
