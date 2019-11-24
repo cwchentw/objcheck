@@ -2,7 +2,7 @@
 # Author: Michael Chen  License: MIT
 
 program="$0"
-version="0.3.6"
+version="0.3.7"
 license="MIT"
 
 version () {
@@ -317,6 +317,10 @@ if [ "$cmd" = "application" ]; then
     IS_CPP=0
     OBJS=
     for file in "$@"; do
+        if [ "$file" = "--" ]; then
+            break;
+        fi
+
         FILE_EXT=$(check_ext $file | cat)
         filename=$(basename $file)
         objname="${filename%$FILE_EXT}.o"
@@ -343,7 +347,20 @@ if [ "$cmd" = "application" ]; then
     fi
     $GCC -o $dest $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
         -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString
-    LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest
+
+    args=
+    is_arg=0
+    for arg in "$@"; do
+        if [ "$arg" = "--" ]; then
+            is_arg=1;
+            continue;
+        fi
+
+        if [ $is_arg -eq 1 ]; then
+            args="$args $arg"
+        fi
+    done
+    LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest $args
 elif [ "$cmd" = "dynamic" ]; then
     IS_CPP=0
     OBJS=
@@ -414,6 +431,10 @@ if [ "$cmd" = "application" ]; then
     IS_CPP=0
     OBJS=
     for file in "$@"; do
+        if [ "$file" = "--" ]; then
+            break;
+        fi
+
         FILE_EXT=$(check_ext $file | cat)
         filename=$(basename $file)
         objname="${filename%$FILE_EXT}.o"
@@ -443,7 +464,20 @@ if [ "$cmd" = "application" ]; then
     $CLANG -o $dest $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
         -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
         $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString
-    LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest
+
+    args=
+    is_arg=0
+    for arg in "$@"; do
+        if [ "$arg" = "--" ]; then
+            is_arg=1;
+            continue;
+        fi
+
+        if [ $is_arg -eq 1 ]; then
+            args="$args $arg"
+        fi
+    done
+    LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest $args
 elif [ "$cmd" = "dynamic" ]; then
     IS_CPP=0
     OBJS=
