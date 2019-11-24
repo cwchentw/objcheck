@@ -37,6 +37,7 @@ help () {
     echo "\tCXXFLAGS\t\tCusteom include paths and compiler flags for C++"
     echo "\tLDFLAGS\t\t\tCustom library paths"
     echo "\tLIBS\t\t\tCustom library linkage"
+    echo "\tLD_LIBRARY_PATH\t\tCustom binary file paths"
 }
 
 help_version () {
