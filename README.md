@@ -2,6 +2,10 @@
 
 `objcheck`, aka Objective-C Check, tests Objective-C and Objective-C++ code against both Clang and GCC automatically.
 
+## Warning
+
+`objcheck` checks target source by compiling and executing it. Hence, DON'T use `objcheck` against untrusted source.
+
 ## Why `objcheck`?
 
 Currently, the major Objective-C compilers, Clang and GCC, are not totally compatible at code level. If wanting to check compiler compatibility for our Objective-C code base, we have to compile it twice.
@@ -88,6 +92,7 @@ You can adjust the behavior of `objcheck` with the following environment variabl
 * **CXXFLAGS** to set custom include paths and compiler flags for C++
 * **LDFLAGS** to set custom lib paths
 * **LIBS** to set custom library linkages
+* **LD_LIBRARY_PATH** to set custom binary file paths
 
 All environment variables are optional, set with sensible default values.
 
