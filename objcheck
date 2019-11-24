@@ -332,9 +332,9 @@ if [ "$cmd" = "application" ]; then
         filename=$(basename $file)
         objname="${filename%$FILE_EXT}.o"
         OBJS="$objname $OBJS"
-        
+
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
-        
+
         if [ "$FILE_TYPE" = "objective-c" ]; then
             $GCC -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
@@ -376,9 +376,9 @@ elif [ "$cmd" = "dynamic" ]; then
         filename=$(basename $file)
         objname="${filename%$FILE_EXT}.o"
         OBJS="$objname $OBJS"
-        
+
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
-        
+
         if [ "$FILE_TYPE" = "objective-c" ]; then
             $GCC -fPIC -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
@@ -405,9 +405,9 @@ elif [ "$cmd" = "static" ]; then
         filename=$(basename $file)
         objname="${filename%$FILE_EXT}.o"
         OBJS="$objname $OBJS"
-        
+
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
-        
+
         if [ "$FILE_TYPE" = "objective-c" ]; then
             $GCC -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "objective-c++" ]; then
@@ -446,9 +446,9 @@ if [ "$cmd" = "application" ]; then
         filename=$(basename $file)
         objname="${filename%$FILE_EXT}.o"
         OBJS="$objname $OBJS"
-        
+
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
-        
+
         if [ "$FILE_TYPE" = "objective-c" ]; then
             $CLANG -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS \
                 -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
@@ -493,9 +493,9 @@ elif [ "$cmd" = "dynamic" ]; then
         filename=$(basename $file)
         objname="${filename%$FILE_EXT}.o"
         OBJS="$objname $OBJS"
-        
+
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
-        
+
         if [ "$FILE_TYPE" = "objective-c" ]; then
             $CLANG -fPIC -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS \
                 -I $GNUSTEP_INCLUDE -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
@@ -526,9 +526,9 @@ elif [ "$cmd" = "static" ]; then
         filename=$(basename $file)
         objname="${filename%$FILE_EXT}.o"
         OBJS="$objname $OBJS"
-        
+
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
-        
+
         if [ "$FILE_TYPE" = "objective-c" ]; then
             $CLANG -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS \
                 -I $GNUSTEP_INCLUDE -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
