@@ -103,20 +103,23 @@ check_ext () {
 }
 
 check_file_type () {
-    FILE_EXT=$1
-
-    if [ "$FILE_EXT" = ".m" ]; then
+    case $1 in
+    .m)
         echo "objective-c"
-    elif [ "$FILE_EXT" = ".mm" ]; then
+        ;;
+    .mm)
         echo "objective-c++"
-    elif [ "$FILE_EXT" = ".c" ]; then
+        ;;
+    .c)
         echo "c"
-    elif [ "$FILE_EXT" = ".cpp" ] || [ "$FILE_EXT" = ".cxx" ] || [ "$FILE_EXT" = ".cc" ]; then
+        ;;
+    .cpp|.cxx|.cc)
         echo "c++"
-    else
+        ;;
+    *)
         echo "Unknown file extension: $FILE_EXT"
         exit 1
-    fi
+    esac
 }
 
 cmd=$1
