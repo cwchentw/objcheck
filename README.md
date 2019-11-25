@@ -35,7 +35,7 @@ We tested `objcheck` on Ubuntu 18.04 LTS. It should work on other Unix-like OSes
 * *.c* for C source
 * *.cpp*, *.cxx* or *.cc* for C++ source
 
-`objcheck` can handle Objective-C projects that mix these languages together. 
+`objcheck` can handle Objective-C projects that mix these languages together.
 
 ## Usage
 

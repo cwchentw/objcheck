@@ -343,7 +343,7 @@ if [ "$cmd" = "application" ]; then
         OBJS="$objname $OBJS"
 
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
-        
+
         if [ $IS_WRONG -ne 0 ]; then
             continue;
         fi
@@ -407,7 +407,7 @@ elif [ "$cmd" = "dynamic" ]; then
         OBJS="$objname $OBJS"
 
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
-        
+
         if [ $IS_WRONG -ne 0 ]; then
             continue;
         fi
@@ -452,7 +452,7 @@ elif [ "$cmd" = "static" ]; then
         OBJS="$objname $OBJS"
 
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
-        
+
         if [ $IS_WRONG -ne 0 ]; then
             continue;
         fi
