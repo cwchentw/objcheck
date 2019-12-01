@@ -227,31 +227,31 @@ fi
 CLANG=$CLANG;
 if [ -z "$CLANG" ];
 then
-    CLANG=clang
+    CLANG=clang;
 fi
 
 CLANGXX=$CLANGXX;
 if [ -z "$CLANGXX" ];
 then
-    CLANGXX=clang++
+    CLANGXX=clang++;
 fi
 
 # Set the include path of GNUstep
 GNUSTEP_INCLUDE=$GNUSTEP_INCLUDE;
 if [ -z "$GNUSTEP_INCLUDE" ];
 then
-    GNUSTEP_INCLUDE=/usr/include/GNUstep
+    GNUSTEP_INCLUDE="/usr/include/GNUstep";
 fi
 
 # Set the lib path of GNUstep
 GNUSTEP_LIB=$GNUSTEP_LIB;
 if [ -z "$GNUSTEP_LIB" ];
 then
-    GNUSTEP_LIB=/usr/lib/GNUstep
+    GNUSTEP_LIB="/usr/lib/GNUstep";
 fi
 
 # Set dist file
-dest=$OUT_FILE
+dest=$OUT_FILE;
 if [ -z "$dest" ];
 then
     dest="out";
@@ -314,7 +314,7 @@ int main(void)
     return 0;
 }
 EOF
-)
+);
 
 # Check whether GNUstep exists on the host.
 temp="$(mktemp --suffix .m)";
@@ -355,326 +355,392 @@ int main(void)
     return 0;
 }
 EOFPP
-)
+);
 
 # Check GNUstep with Objective-C++ on the host.
-temp="$(mktemp --suffix .mm)"
-echo "$helloworldpp" > $temp
+temp="$(mktemp --suffix .mm)";
+echo "$helloworldpp" > $temp;
 $GXX -o $dest $temp -lobjc -lgnustep-base $LIBS $CXXFLAGS \
     -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $LDFLAGS \
-    -fconstant-string-class=NSConstantString -fobjc-exceptions
-LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1
+    -fconstant-string-class=NSConstantString -fobjc-exceptions;
+LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1;
 
-if [ "$?" -ne 0 ]; then
+if [ "$?" -ne 0 ];
+then
     echo "Please install GNUstep and/or gobjc++";
-    rm -f $dest
-    exit 1
+    rm -f $dest;
+    exit 1;
 fi
 
-rm -f $dest
+rm -f $dest;
 
-# Check whether input file paths exist.
-src="$@"
-
-if [ -z "$1" ]; then
-    echo "No input file"
-    exit 1
+if [ -z "$1" ];
+then
+    echo "No input file";
+    exit 1;
 fi
 
 # Test the program with GCC.
-if [ "$cmd" = "application" ]; then
-    IS_CPP=0
-    OBJS=
-    IS_WRONG=0
-    for file in "$@"; do
-        if [ "$file" = "--" ]; then
+if [ "$cmd" = "application" ];
+then
+    IS_CPP=0;
+    OBJS="";
+    IS_WRONG=0;
+    for file in "$@";
+    do
+        if [ "$file" = "--" ];
+        then
             break;
         fi
 
-        FILE_EXT=$(check_ext $file | cat)
+        FILE_EXT=$(check_ext "$file");
 
-        if [ $FILE_EXT = $unsupported_file_extension ]; then
+        if [ "$FILE_EXT" = "$unsupported_file_extension" ];
+        then
             IS_WRONG=1;
             continue;
         fi
 
-        filename=$(basename $file)
-        objname="${filename%$FILE_EXT}.o"
-        OBJS="$objname $OBJS"
+        filename=$(basename "$file");
+        objname="${filename%$FILE_EXT}.o";
+        OBJS="$objname $OBJS";
 
-        FILE_TYPE=$(check_file_type $FILE_EXT | cat)
+        FILE_TYPE=$(check_file_type "$FILE_EXT");
 
-        if [ $IS_WRONG -ne 0 ]; then
+        if [ $IS_WRONG -ne 0 ];
+        then
             continue;
         fi
 
-        if [ "$FILE_TYPE" = "objective-c" ]; then
+        if [ "$FILE_TYPE" = "objective-c" ];
+        then
             $GCC -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS \
-                -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "objective-c++" ]; then
-            IS_CPP=1
+                -fconstant-string-class=NSConstantString -fobjc-exceptions;
+        elif [ "$FILE_TYPE" = "objective-c++" ];
+        then
+            IS_CPP=1;
             $GXX -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS \
-                -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "c" ]; then
-            $GCC -c -o $objname $file $CFLAGS
+                -fconstant-string-class=NSConstantString -fobjc-exceptions;
+        elif [ "$FILE_TYPE" = "c" ];
+        then
+            $GCC -c -o $objname $file $CFLAGS;
         elif [ "$FILE_TYPE" = "c++" ]; then
-            IS_CPP=1
-            $GXX -c -o $objname $file $CXXFLAGS
+            IS_CPP=1;
+            $GXX -c -o $objname $file $CXXFLAGS;
         fi
     done
 
-    if [ $IS_WRONG -ne 0 ]; then
+    if [ $IS_WRONG -ne 0 ];
+    then
         exit 1;
     fi
 
-    if [ $IS_CPP -eq 1 ]; then
-        LIBS_INTERNAL="-lstdc++"
+    if [ $IS_CPP -eq 1 ];
+    then
+        LIBS_INTERNAL="-lstdc++";
     fi
     $GCC -o $dest $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
-        -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString
+        -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $CFLAGS $LDFLAGS \
+        -fconstant-string-class=NSConstantString;
 
-    args=
-    is_arg=0
-    for arg in "$@"; do
-        if [ "$arg" = "--" ]; then
+    args="";
+    is_arg=0;
+    for arg in "$@";
+    do
+        if [ "$arg" = "--" ];
+        then
             is_arg=1;
             continue;
         fi
 
-        if [ $is_arg -eq 1 ]; then
+        if [ $is_arg -eq 1 ];
+        then
             args="$args $arg"
         fi
     done
-    LD_LIBRARY_PATH=$GNUSTEP_LIB:$LD_LIBRARY_PATH ./$dest $args
-elif [ "$cmd" = "dynamic" ]; then
-    IS_CPP=0
-    OBJS=
-    IS_WRONG=0
-    for file in "$@"; do
-        if [ "$file" = "--" ]; then
+    LD_LIBRARY_PATH=$GNUSTEP_LIB:$LD_LIBRARY_PATH ./$dest $args;
+elif [ "$cmd" = "dynamic" ];
+then
+    IS_CPP=0;
+    OBJS="";
+    IS_WRONG=0;
+    for file in $@;
+    do
+        if [ "$file" = "--" ];
+        then
             break;
         fi
 
-        FILE_EXT=$(check_ext $file | cat)
+        FILE_EXT=$(check_ext "$file");
 
-        if [ $FILE_EXT = $unsupported_file_extension ]; then
+        if [ "$FILE_EXT" = "$unsupported_file_extension" ];
+        then
             IS_WRONG=1;
             continue;
         fi
 
-        filename=$(basename $file)
-        objname="${filename%$FILE_EXT}.o"
-        OBJS="$objname $OBJS"
+        filename=$(basename $file);
+        objname="${filename%$FILE_EXT}.o";
+        OBJS="$objname $OBJS";
 
-        FILE_TYPE=$(check_file_type $FILE_EXT | cat)
+        FILE_TYPE=$(check_file_type "$FILE_EXT");
 
-        if [ $IS_WRONG -ne 0 ]; then
+        if [ $IS_WRONG -ne 0 ];
+        then
             continue;
         fi
 
-        if [ "$FILE_TYPE" = "objective-c" ]; then
+        if [ "$FILE_TYPE" = "objective-c" ];
+        then
             $GCC -fPIC -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS \
-                -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "objective-c++" ]; then
-            IS_CPP=1
+                -fconstant-string-class=NSConstantString -fobjc-exceptions;
+        elif [ "$FILE_TYPE" = "objective-c++" ];
+        then
+            IS_CPP=1;
             $GXX -fPIC -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS \
-                -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "c" ]; then
-            $GCC -fPIC -c -o $objname $file $CFLAGS
-        elif [ "$FILE_TYPE" = "c++" ]; then
-            IS_CPP=1
-            $GXX -fPIC -c -o $objname $file $CXXFLAGS
+                -fconstant-string-class=NSConstantString -fobjc-exceptions;
+        elif [ "$FILE_TYPE" = "c" ];
+        then
+            $GCC -fPIC -c -o $objname $file $CFLAGS;
+        elif [ "$FILE_TYPE" = "c++" ];
+        then
+            IS_CPP=1;
+            $GXX -fPIC -c -o $objname $file $CXXFLAGS;
         fi
     done
 
-    if [ $IS_WRONG -ne 0 ]; then
+    if [ $IS_WRONG -ne 0 ];
+    then
         exit 1;
     fi
 
-    if [ $IS_CPP -eq 1 ]; then
+    if [ $IS_CPP -eq 1 ];
+    then
         LIBS_INTERNAL="-lstdc++"
     fi
-    $GCC -shared -o "lib${dest}.so" $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
-        -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString -fobjc-exceptions
-elif [ "$cmd" = "static" ]; then
-    OBJS=
-    IS_WRONG=0
-    for file in "$@"; do
-        FILE_EXT=$(check_ext $file | cat)
+    $GCC -shared -o "lib${dest}.so" $OBJS $LIBS_INTERNAL \
+        -lobjc -lgnustep-base $LIBS \
+        -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $CFLAGS $LDFLAGS \
+        -fconstant-string-class=NSConstantString -fobjc-exceptions;
+elif [ "$cmd" = "static" ];
+then
+    OBJS="";
+    IS_WRONG=0;
+    for file in $@;
+    do
+        FILE_EXT=$(check_ext $file);
 
-        if [ $FILE_EXT = $unsupported_file_extension ]; then
+        if [ $FILE_EXT = $unsupported_file_extension ];
+        then
             IS_WRONG=1;
             continue;
         fi
 
-        filename=$(basename $file)
-        objname="${filename%$FILE_EXT}.o"
-        OBJS="$objname $OBJS"
+        filename=$(basename $file);
+        objname="${filename%$FILE_EXT}.o";
+        OBJS="$objname $OBJS";
 
-        FILE_TYPE=$(check_file_type $FILE_EXT | cat)
+        FILE_TYPE=$(check_file_type $FILE_EXT);
 
-        if [ $IS_WRONG -ne 0 ]; then
+        if [ $IS_WRONG -ne 0 ];
+        then
             continue;
         fi
 
-        if [ "$FILE_TYPE" = "objective-c" ]; then
-            $GCC -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "objective-c++" ]; then
+        if [ "$FILE_TYPE" = "objective-c" ];
+        then
+            $GCC -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS \
+                -fconstant-string-class=NSConstantString -fobjc-exceptions;
+        elif [ "$FILE_TYPE" = "objective-c++" ];
+        then
             IS_CPP=1
-            $GXX -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "c" ]; then
-            $GCC -c -o $objname $file $CFLAGS
-        elif [ "$FILE_TYPE" = "c++" ]; then
-            IS_CPP=1
-            $GXX -c -o $objname $file $CXXFLAGS
+            $GXX -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS \
+                -fconstant-string-class=NSConstantString -fobjc-exceptions;
+        elif [ "$FILE_TYPE" = "c" ];
+        then
+            $GCC -c -o $objname $file $CFLAGS;
+        elif [ "$FILE_TYPE" = "c++" ];
+        then
+            IS_CPP=1;
+            $GXX -c -o $objname $file $CXXFLAGS;
         fi
     done
 
-    if [ $IS_WRONG -ne 0 ]; then
+    if [ $IS_WRONG -ne 0 ];
+    then
         exit 1;
     fi
 
-    ar rcs "lib${dest}.a" $OBJS
+    ar rcs "lib${dest}.a" $OBJS;
 fi
 
-if [ "$?" -ne 0 ]; then
+if [ "$?" -ne 0 ];
+then
     echo "Wrong program compiled by GCC";
-    clean
-    exit 1
+    clean;
+    exit 1;
 fi
 
-clean
+clean;
 
 # Test the program with Clang.
-if [ "$cmd" = "application" ]; then
-    IS_CPP=0
-    OBJS=
-    for file in "$@"; do
-        if [ "$file" = "--" ]; then
+if [ "$cmd" = "application" ];
+then
+    IS_CPP=0;
+    OBJS="";
+    for file in $@;
+    do
+        if [ "$file" = "--" ];
+        then
             break;
         fi
 
-        FILE_EXT=$(check_ext $file | cat)
-        filename=$(basename $file)
-        objname="${filename%$FILE_EXT}.o"
-        OBJS="$objname $OBJS"
+        FILE_EXT=$(check_ext $file);
+        filename=$(basename $file);
+        objname="${filename%$FILE_EXT}.o";
+        OBJS="$objname $OBJS";
 
-        FILE_TYPE=$(check_file_type $FILE_EXT | cat)
+        FILE_TYPE=$(check_file_type $FILE_EXT);
 
-        if [ "$FILE_TYPE" = "objective-c" ]; then
+        if [ "$FILE_TYPE" = "objective-c" ];
+        then
             $CLANG -c -o $objname $file \
                 -I "${gcc_lib_dir}/${gcc_ver}/include" \
                 -I $GNUSTEP_INCLUDE $CFLAGS \
-                -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "objective-c++" ]; then
-            IS_CPP=1
+                -fconstant-string-class=NSConstantString -fobjc-exceptions;
+        elif [ "$FILE_TYPE" = "objective-c++" ];
+        then
+            IS_CPP=1;
             $CLANGXX -c -o $objname $file  \
                 -I "${gcc_lib_dir}/${gcc_ver}/include" \
                 -I $GNUSTEP_INCLUDE $CXXFLAGS \
-                -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "c" ]; then
-            $CLANG -c -o $objname $file $CFLAGS
-        elif [ "$FILE_TYPE" = "c++" ]; then
-            IS_CPP=1
-            $CLANGXX -c -o $objname $file $CXXFLAGS
+                -fconstant-string-class=NSConstantString -fobjc-exceptions;
+        elif [ "$FILE_TYPE" = "c" ];
+        then
+            $CLANG -c -o $objname $file $CFLAGS;
+        elif [ "$FILE_TYPE" = "c++" ];
+        then
+            IS_CPP=1;
+            $CLANGXX -c -o $objname $file $CXXFLAGS;
         fi
     done
-    if [ $IS_CPP -eq 1 ]; then
+    if [ $IS_CPP -eq 1 ];
+    then
         LIBS_INTERNAL="-lstdc++"
     fi
     $CLANG -o $dest $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
-        -I "${gcc_lib_dir}/${gcc_ver}/include" -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB \
-        $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString
+        -I "${gcc_lib_dir}/${gcc_ver}/include" \
+        -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB \
+        $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString;
 
-    args=
-    is_arg=0
-    for arg in "$@"; do
-        if [ "$arg" = "--" ]; then
+    args="";
+    is_arg=0;
+    for arg in $@;
+    do
+        if [ "$arg" = "--" ];
+        then
             is_arg=1;
             continue;
         fi
 
-        if [ $is_arg -eq 1 ]; then
+        if [ $is_arg -eq 1 ];
+        then
             args="$args $arg"
         fi
     done
-    LD_LIBRARY_PATH=$GNUSTEP_LIB:$LD_LIBRARY_PATH ./$dest $args
-elif [ "$cmd" = "dynamic" ]; then
-    IS_CPP=0
-    OBJS=
-    for file in "$@"; do
-        FILE_EXT=$(check_ext $file | cat)
-        filename=$(basename $file)
-        objname="${filename%$FILE_EXT}.o"
-        OBJS="$objname $OBJS"
+    LD_LIBRARY_PATH=$GNUSTEP_LIB:$LD_LIBRARY_PATH ./$dest $args;
+elif [ "$cmd" = "dynamic" ];
+then
+    IS_CPP=0;
+    OBJS="";
+    for file in $@;
+    do
+        FILE_EXT=$(check_ext $file);
+        filename=$(basename $file);
+        objname="${filename%$FILE_EXT}.o";
+        OBJS="$objname $OBJS";
 
-        FILE_TYPE=$(check_file_type $FILE_EXT | cat)
+        FILE_TYPE=$(check_file_type "$FILE_EXT");
 
-        if [ "$FILE_TYPE" = "objective-c" ]; then
+        if [ "$FILE_TYPE" = "objective-c" ];
+        then
             $CLANG -fPIC -c -o $objname $file \
                 -I $GNUSTEP_INCLUDE -I "${gcc_lib_dir}/${gcc_ver}/include" \
                 -I $GNUSTEP_INCLUDE $CFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "objective-c++" ]; then
-            IS_CPP=1
+        elif [ "$FILE_TYPE" = "objective-c++" ];
+        then
+            IS_CPP=1;
             $CLANGXX -fPIC -c -o $objname $file \
                 -I $GNUSTEP_INCLUDE -I "${gcc_lib_dir}/${gcc_ver}/include" \
                 -I $GNUSTEP_INCLUDE $CXXFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "c" ]; then
-            $CLANG -fPIC -c -o $objname $file $CFLAGS
-        elif [ "$FILE_TYPE" = "c++" ]; then
-            IS_CPP=1
-            $CLANGXX -fPIC -c -o $objname $file $CXXFLAGS
+        elif [ "$FILE_TYPE" = "c" ];
+        then
+            $CLANG -fPIC -c -o $objname $file $CFLAGS;
+        elif [ "$FILE_TYPE" = "c++" ];
+        then
+            IS_CPP=1;
+            $CLANGXX -fPIC -c -o $objname $file $CXXFLAGS;
         fi
     done
-    if [ $IS_CPP -eq 1 ]; then
+    if [ $IS_CPP -eq 1 ];
+    then
         LIBS_INTERNAL="-lstdc++"
     fi
-    $CLANG -shared -o "lib${dest}.so" $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
-        -I "${gcc_lib_dir}/${gcc_ver}/include" -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB \
-        $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString -fobjc-exceptions
-elif [ "$cmd" = "static" ]; then
-    IS_CPP=0
-    OBJS=
-    for file in "$@"; do
-        FILE_EXT=$(check_ext $file | cat)
-        filename=$(basename $file)
-        objname="${filename%$FILE_EXT}.o"
-        OBJS="$objname $OBJS"
+    $CLANG -shared -o "lib${dest}.so" $OBJS \
+        $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
+        -I "${gcc_lib_dir}/${gcc_ver}/include" \
+        -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $CFLAGS $LDFLAGS \
+        -fconstant-string-class=NSConstantString -fobjc-exceptions;
+elif [ "$cmd" = "static" ];
+then
+    IS_CPP=0;
+    OBJS="";
+    for file in $@;
+    do
+        FILE_EXT=$(check_ext $file);
+        filename=$(basename $file);
+        objname="${filename%$FILE_EXT}.o";
+        OBJS="$objname $OBJS";
 
-        FILE_TYPE=$(check_file_type $FILE_EXT | cat)
+        FILE_TYPE=$(check_file_type "$FILE_EXT");
 
-        if [ "$FILE_TYPE" = "objective-c" ]; then
+        if [ "$FILE_TYPE" = "objective-c" ];
+        then
             $CLANG -c -o $objname $file \
                 -I $GNUSTEP_INCLUDE -I "${gcc_lib_dir}/${gcc_ver}/include" \
                 -I $GNUSTEP_INCLUDE $CFLAGS \
-                -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "objective-c++" ]; then
-            IS_CPP=1
+                -fconstant-string-class=NSConstantString -fobjc-exceptions;
+        elif [ "$FILE_TYPE" = "objective-c++" ];
+        then
+            IS_CPP=1;
             $CLANGXX -c -o $objname $file \
                 -I $GNUSTEP_INCLUDE -I "${gcc_lib_dir}/${gcc_ver}/include" \
                 -I $GNUSTEP_INCLUDE $CXXFLAGS \
-                -fconstant-string-class=NSConstantString -fobjc-exceptions
-        elif [ "$FILE_TYPE" = "c" ]; then
-            $CLANG -c -o $objname $file $CFLAGS
-        elif [ "$FILE_TYPE" = "c++" ]; then
-            IS_CPP=1
-            $CLANGXX -c -o $objname $file $CXXFLAGS
+                -fconstant-string-class=NSConstantString -fobjc-exceptions;
+        elif [ "$FILE_TYPE" = "c" ];
+        then
+            $CLANG -c -o $objname $file $CFLAGS;
+        elif [ "$FILE_TYPE" = "c++" ];
+        then
+            IS_CPP=1;
+            $CLANGXX -c -o $objname $file $CXXFLAGS;
         fi
     done
-    if [ $IS_CPP -eq 1 ]; then
-        LIBS_INTERNAL="-lstdc++"
+    if [ $IS_CPP -eq 1 ];
+    then
+        LIBS_INTERNAL="-lstdc++";
     fi
-    ar rcs "lib${dest}.a" $OBJS
+    ar rcs "lib${dest}.a" $OBJS;
 fi
 
 if [ "$?" -ne 0 ]; then
     echo "Wrong program compiled by Clang";
-    clean
+    clean;
     exit 1
 fi
 
-clean
+clean;
 
-exit 0
+exit 0;
