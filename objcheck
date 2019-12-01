@@ -318,13 +318,12 @@ EOF
 
 # Check whether GNUstep exists on the host.
 temp="$(mktemp --suffix .m)";
-echo "$helloworld" > $temp;
-$GCC -o $dest $temp -lobjc -lgnustep-base $LIBS $CFLAGS \
+echo "$helloworld" > "$temp";
+$GCC -o $dest "$temp" -lobjc -lgnustep-base $LIBS $CFLAGS \
     -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $LDFLAGS \
     -fconstant-string-class=NSConstantString -fobjc-exceptions;
-LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1;
 
-if [ "$?" -ne 0 ];
+if ! LD_LIBRARY_PATH=$GNUSTEP_LIB:$LD_LIBRARY_PATH ./$dest 2>/dev/null 1>&2;
 then
     echo "Please install GNUstep";
     rm -f $dest;
@@ -359,13 +358,12 @@ EOFPP
 
 # Check GNUstep with Objective-C++ on the host.
 temp="$(mktemp --suffix .mm)";
-echo "$helloworldpp" > $temp;
-$GXX -o $dest $temp -lobjc -lgnustep-base $LIBS $CXXFLAGS \
+echo "$helloworldpp" > "$temp";
+$GXX -o $dest "$temp" -lobjc -lgnustep-base $LIBS $CXXFLAGS \
     -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $LDFLAGS \
     -fconstant-string-class=NSConstantString -fobjc-exceptions;
-LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1;
 
-if [ "$?" -ne 0 ];
+if ! LD_LIBRARY_PATH=$GNUSTEP_LIB:$LD_LIBRARY_PATH ./$dest 2>/dev/null 1>&2;
 then
     echo "Please install GNUstep and/or gobjc++";
     rm -f $dest;
