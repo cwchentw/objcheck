@@ -366,7 +366,7 @@ $GXX -o $dest $temp -lobjc -lgnustep-base $LIBS $CXXFLAGS \
 LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1
 
 if [ "$?" -ne 0 ]; then
-    echo "Please install GNUstep and/or g++";
+    echo "Please install GNUstep and/or gobjc++";
     rm -f $dest
     exit 1
 fi
