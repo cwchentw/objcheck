@@ -24,7 +24,7 @@ It is tedious to write Makefile or another project configuration file for each c
 
 `objcheck` will check these dependencies, emitting an error message if one is not installed on your system.
 
-We tested `objcheck` on Ubuntu 18.04 LTS. It should work on other Unix-like OSes as well.
+We tested `objcheck` on Ubuntu 18.04 LTS and Amazon Linux. The latter is largely RHEL and CentOS compatible. It should work on other Unix-like OSes as well.
 
 ## Supported File Formats
 
