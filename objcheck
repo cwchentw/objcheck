@@ -1,241 +1,300 @@
 #!/bin/sh
 # Author: Michael Chen  License: MIT
 
-program="$0"
-version="0.3.8"
-license="MIT"
+program="$0";
+version="0.3.8";
+license="MIT";
 
-unsupported_file_extension="wrong"
+unsupported_file_extension="wrong";
 
-version () {
-    echo $version
+version ()
+{
+    echo $version;
 }
 
-license () {
-    echo $license
+license ()
+{
+    echo $license;
 }
 
 #--------1---------2---------3---------4---------5---------6---------7---------8
 #2345678901234567890123456789012345678901234567890123456789012345678901234567890
-help_info () {
-    printf "Usage: %s [command] ...\n" "$program"
-    printf "       %s help [command]\n" "$program"
-    printf "\n"
-    printf "Commands:\n"
-    printf "\tversion\t\tShow version info and exit\n"
-    printf "\tlicense\t\tShow license info and exit\n"
-    printf "\thelp\t\tShow help info and exit\n"
-    printf "\tapplication\tCompile an application (default)\n"
-    printf "\tstatic\t\tCompile a static library\n"
-    printf "\tdynamic\t\tCompile a dynamic library\n"
-    printf "\n"
-    printf "Environment variables:\n"
-    printf "\tGCC\t\t\tSet GCC compiler\n"
-    printf "\tGPP\t\t\tSet G++ compiler\n"
-    printf "\tCLANG\t\t\tSet Clang compiler\n"
-    printf "\tCLANGPP\t\t\tSet Clang++ compiler\n"
-    printf "\tOUT_FILE\t\tThe name of output file\n"
-    printf "\tGNUSTEP_INCLUDE\t\tThe include path of GNUstep\n"
-    printf "\tGNUSTEP_LIB\t\tThe lib path of GNUstep\n"
-    printf "\tCFLAGS\t\t\tCustom include paths and compiler flags for C\n"
-    printf "\tCXXFLAGS\t\tCusteom include paths and compiler flags for C++\n"
-    printf "\tLDFLAGS\t\t\tCustom library paths\n"
-    printf "\tLIBS\t\t\tCustom library linkage\n"
-    printf "\tLD_LIBRARY_PATH\t\tCustom binary file paths\n"
+help_info ()
+{
+    printf "Usage: %s [command] ...\n" "$program";
+    printf "       %s help [command]\n" "$program";
+    printf "\n";
+    printf "Commands:\n";
+    printf "\tversion\t\tShow version info and exit\n";
+    printf "\tlicense\t\tShow license info and exit\n";
+    printf "\thelp\t\tShow help info and exit\n";
+    printf "\tapplication\tCompile an application (default)\n";
+    printf "\tstatic\t\tCompile a static library\n";
+    printf "\tdynamic\t\tCompile a dynamic library\n";
+    printf "\n";
+    printf "Environment variables:\n";
+    printf "\tGCC\t\t\tSet GCC compiler\n";
+    printf "\tGXX\t\t\tSet G++ compiler\n";
+    printf "\tCLANG\t\t\tSet Clang compiler\n";
+    printf "\tCLANGXX\t\t\tSet Clang++ compiler\n";
+    printf "\tOUT_FILE\t\tThe name of output file\n";
+    printf "\tGNUSTEP_INCLUDE\t\tThe include path of GNUstep\n";
+    printf "\tGNUSTEP_LIB\t\tThe lib path of GNUstep\n";
+    printf "\tCFLAGS\t\t\tCustom include paths and compiler flags for C\n";
+    printf "\tCXXFLAGS\t\tCusteom include paths and compiler flags for C++\n";
+    printf "\tLDFLAGS\t\t\tCustom library paths\n";
+    printf "\tLIBS\t\t\tCustom library linkage\n";
+    printf "\tLD_LIBRARY_PATH\t\tCustom binary file paths\n";
 }
 
-help_version () {
-    echo "Usage: $program version"
-    echo ""
-    echo "Show version info and exit"
+help_version ()
+{
+    echo "Usage: $program version";
+    echo "";
+    echo "Show version info and exit";
 }
 
-help_license () {
-    echo "Usage: $program license"
-    echo ""
-    echo "Show license info and exit"
+help_license ()
+{
+    echo "Usage: $program license";
+    echo "";
+    echo "Show license info and exit";
 }
 
-help_help () {
-    echo "Usage: $program help [command]"
-    echo ""
-    echo "Show help info for [command] and exit"
+help_help ()
+{
+    echo "Usage: $program help [command]";
+    echo "";
+    echo "Show help info for [command] and exit";
 }
 
-help_application () {
-    echo "Usage: $program [application] main.m ..."
-    echo ""
-    echo "Test an application against both GCC and Clang"
+help_application ()
+{
+    echo "Usage: $program [application] main.m ...";
+    echo "";
+    echo "Test an application against both GCC and Clang";
 }
 
-help_static () {
-    echo "Usage: $program static lib.m ..."
-    echo ""
-    echo "Test a static library against both GCC and Clang"
+help_static ()
+{
+    echo "Usage: $program static lib.m ...";
+    echo "";
+    echo "Test a static library against both GCC and Clang";
 }
 
-help_dynamic () {
-    echo "Usage: $program dynamic lib.m ..."
-    echo ""
-    echo "Test a dynamic library against both GCC and Clang"
+help_dynamic ()
+{
+    echo "Usage: $program dynamic lib.m ...";
+    echo "";
+    echo "Test a dynamic library against both GCC and Clang";
 }
 
-check_ext () {
-    case $1 in
-    *.mm)
-        echo ".mm";
-        ;;
-    *.m)
-        echo ".m";
-        ;;
-    *.cpp)
-        echo ".cpp";
-        ;;
-    *.cxx)
-        echo ".cxx";
-        ;;
-    *.cc)
-        echo ".cc";
-        ;;
-    *.c)
-        echo ".c";
-        ;;
-    *)
-        echo "Unsupported file: $1" >&2;
-        echo $unsupported_file_extension;
-        ;;
+# check_ext extension
+check_ext ()
+{
+    local ext=$1;
+
+    if [ -z "$1" ];
+    then
+        echo "No valid file extension" >&2;
+        exit 1;
+    fi
+
+    case "$ext" in
+        *.mm)
+            echo ".mm";
+            ;;
+        *.m)
+            echo ".m";
+            ;;
+        *.cpp)
+            echo ".cpp";
+            ;;
+        *.cxx)
+            echo ".cxx";
+            ;;
+        *.cc)
+            echo ".cc";
+            ;;
+        *.c)
+            echo ".c";
+            ;;
+        *)
+            echo "Unsupported file: $1" >&2;
+            echo "$unsupported_file_extension";
+            ;;
     esac
 }
 
-check_file_type () {
-    case $1 in
-    .m)
-        echo "objective-c";
-        ;;
-    .mm)
-        echo "objective-c++";
-        ;;
-    .c)
-        echo "c";
-        ;;
-    .cpp|.cxx|.cc)
-        echo "c++";
-        ;;
-    *)
-        echo "Unknown file extension: $FILE_EXT" >&2;
-        ;;
+# check_file_type extension
+check_file_type ()
+{
+    local ext=$1;
+
+    if [ -z "$ext" ];
+    then
+        echo "No valid file extension" >&2;
+        exit 1;
+    fi
+
+    case "$ext" in
+        .m)
+            echo "objective-c";
+            ;;
+        .mm)
+            echo "objective-c++";
+            ;;
+        .c)
+            echo "c";
+            ;;
+        .cpp|.cxx|.cc)
+            echo "c++";
+            ;;
+        *)
+            echo "Unknown file extension: $FILE_EXT" >&2;
+            ;;
     esac
 }
 
-cmd=$1
-if [ "$cmd" = "version" ]; then
+cmd=$1;
+if [ "$cmd" = "version" ];
+then
     version;
     exit 0;
 fi
 
-if [ "$cmd" = "license" ]; then
+if [ "$cmd" = "license" ];
+then
     license;
     exit 0;
 fi
 
-if [ "$cmd" = "help" ]; then
-    subcmd=$2
+if [ "$cmd" = "help" ];
+then
+    subcmd=$2;
 
-    if [ "$subcmd" = "version" ]; then
+    if [ "$subcmd" = "version" ];
+    then
         help_version;
-    elif [ "$subcmd" = "license" ]; then
+    elif [ "$subcmd" = "license" ];
+    then
         help_license;
-    elif [ "$subcmd" = "help" ]; then
+    elif [ "$subcmd" = "help" ];
+    then
         help_help;
-    elif [ "$subcmd" = "application" ]; then
+    elif [ "$subcmd" = "application" ];
+    then
         help_application;
-    elif [ "$subcmd" = "static" ]; then
+    elif [ "$subcmd" = "static" ];
+    then
         help_static;
-    elif [ "$subcmd" = "dynamic" ]; then
+    elif [ "$subcmd" = "dynamic" ];
+    then
         help_dynamic;
-    elif [ "$subcmd" = "" ]; then
+    elif [ "$subcmd" = "" ];
+    then
         help_info;
     else
-        echo "Unknown subcommand: $2"; >&2
+        echo "Unknown subcommand: $2" >&2;
         exit 1;
     fi
 
-    exit 0
+    exit 0;
 fi
 
-if [ "$cmd" = "application" ] || [ "$cmd" = "static" ] || [ "$cmd" = "dynamic" ]; then
+if [ "$cmd" = "application" ] || [ "$cmd" = "static" ] || [ "$cmd" = "dynamic" ];
+then
     shift;
 fi
 
-if [ "$cmd" != "application" ] && [ "$cmd" != "static" ] && [ "$cmd" != "dynamic" ]; then
+if [ "$cmd" != "application" ] && [ "$cmd" != "static" ] && [ "$cmd" != "dynamic" ];
+then
     cmd="application";
 fi
 
-GCC=$GCC
-if [ -z "$GCC" ]; then
-    GCC=gcc
+GCC=$GCC;
+if [ -z "$GCC" ];
+then
+    GCC=gcc;
 fi
 
-GPP=$GPP
-if [ -z "$GPP" ]; then
-    GPP=g++
+GXX=$GXX;
+if [ -z "$GXX" ];
+then
+    GXX=g++;
 fi
 
-CLANG=$CLANG
-if [ -z "$CLANG" ]; then
+CLANG=$CLANG;
+if [ -z "$CLANG" ];
+then
     CLANG=clang
 fi
 
-CLANGPP=$CLANGPP
-if [ -z "$CLANGPP" ]; then
-    CLANGPP=clang++
+CLANGXX=$CLANGXX;
+if [ -z "$CLANGXX" ];
+then
+    CLANGXX=clang++
 fi
 
 # Set the include path of GNUstep
-GNUSTEP_INCLUDE=$GNUSTEP_INCLUDE
-if [ -z "$GNUSTEP_INCLUDE" ]; then
+GNUSTEP_INCLUDE=$GNUSTEP_INCLUDE;
+if [ -z "$GNUSTEP_INCLUDE" ];
+then
     GNUSTEP_INCLUDE=/usr/include/GNUstep
 fi
 
 # Set the lib path of GNUstep
-GNUSTEP_LIB=$GNUSTEP_LIB
-if [ -z "$GNUSTEP_LIB" ]; then
+GNUSTEP_LIB=$GNUSTEP_LIB;
+if [ -z "$GNUSTEP_LIB" ];
+then
     GNUSTEP_LIB=/usr/lib/GNUstep
 fi
 
 # Set dist file
 dest=$OUT_FILE
-if [ -z "$dest" ]; then
+if [ -z "$dest" ];
+then
     dest="out";
 fi
 
-if [ -f "$dest" ] || [ -d "$dest" ]; then
-    echo "File ${dest} exists in directory"
+if [ -f "$dest" ] || [ -d "$dest" ];
+then
+    echo "File or directory ${dest} exists in directory" >&2;
     exit 1
 fi
 
-clean () {
-    rm -f $dest "lib${dest}.a" "lib${dest}.so" *.o;
+clean ()
+{
+    rm -f $dest "lib${dest}.a" "lib${dest}.so" -- *.o;
 }
 
 # Check whether GCC exists on the host.
-$GCC --version > /dev/null
-if [ "$?" -ne 0 ]; then
-    echo "Please install gcc and gobjc";
+if ! command -v $GCC 2>/dev/null 1>&2;
+then
+    echo "Please install gcc" >&2;
     exit 1
 fi
 
+gcc_lib_dir=$(ls -d /usr/lib/gcc/x86_64-*);
+gcc_ver=$($GCC --version | grep -oP "\d+.\d+.\d+" | head -n1);
+
+if [ ! -d "${gcc_lib_dir}/${gcc_ver}/include/objc" ];
+then
+    echo "Please install gobjc" >&2;
+    exit 1;
+fi
+
 # Check whether `g++` exists on the host.
-$GPP --version > /dev/null
-if [ "$?" -ne 0 ]; then
-    echo "Please install g++";
+if ! command -v $GXX 2>/dev/null 1>&2;
+then
+    echo "Please install g++" >&2;
     exit 1
 fi
 
 # Check whether Clang exists on the host.
-$CLANG --version > /dev/null
-if [ "$?" -ne 0 ]; then
-    echo "Please install clang";
+if ! command -v $CLANG 2>/dev/null 1>&2;
+then
+    echo "Please install clang" >&2;
     exit 1
 fi
 
@@ -258,20 +317,21 @@ EOF
 )
 
 # Check whether GNUstep exists on the host.
-temp="$(mktemp --suffix .m)"
-echo "$helloworld" > $temp
+temp="$(mktemp --suffix .m)";
+echo "$helloworld" > $temp;
 $GCC -o $dest $temp -lobjc -lgnustep-base $LIBS $CFLAGS \
     -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $LDFLAGS \
-    -fconstant-string-class=NSConstantString -fobjc-exceptions
-LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1
+    -fconstant-string-class=NSConstantString -fobjc-exceptions;
+LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1;
 
-if [ "$?" -ne 0 ]; then
+if [ "$?" -ne 0 ];
+then
     echo "Please install GNUstep";
-    rm -f $dest
+    rm -f $dest;
     exit 1
 fi
 
-rm -f $dest
+rm -f $dest;
 
 helloworldpp=$(cat << EOFPP
 #import <Foundation/Foundation.h>
@@ -300,7 +360,7 @@ EOFPP
 # Check GNUstep with Objective-C++ on the host.
 temp="$(mktemp --suffix .mm)"
 echo "$helloworldpp" > $temp
-$GPP -o $dest $temp -lobjc -lgnustep-base $LIBS $CXXFLAGS \
+$GXX -o $dest $temp -lobjc -lgnustep-base $LIBS $CXXFLAGS \
     -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $LDFLAGS \
     -fconstant-string-class=NSConstantString -fobjc-exceptions
 LD_LIBRARY_PATH=$GNUSTEP_LIB ./$dest > /dev/null 2>&1
@@ -353,13 +413,13 @@ if [ "$cmd" = "application" ]; then
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "objective-c++" ]; then
             IS_CPP=1
-            $GPP -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS \
+            $GXX -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "c" ]; then
             $GCC -c -o $objname $file $CFLAGS
         elif [ "$FILE_TYPE" = "c++" ]; then
             IS_CPP=1
-            $GPP -c -o $objname $file $CXXFLAGS
+            $GXX -c -o $objname $file $CXXFLAGS
         fi
     done
 
@@ -417,13 +477,13 @@ elif [ "$cmd" = "dynamic" ]; then
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "objective-c++" ]; then
             IS_CPP=1
-            $GPP -fPIC -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS \
+            $GXX -fPIC -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "c" ]; then
             $GCC -fPIC -c -o $objname $file $CFLAGS
         elif [ "$FILE_TYPE" = "c++" ]; then
             IS_CPP=1
-            $GPP -fPIC -c -o $objname $file $CXXFLAGS
+            $GXX -fPIC -c -o $objname $file $CXXFLAGS
         fi
     done
 
@@ -461,12 +521,12 @@ elif [ "$cmd" = "static" ]; then
             $GCC -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "objective-c++" ]; then
             IS_CPP=1
-            $GPP -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS -fconstant-string-class=NSConstantString -fobjc-exceptions
+            $GXX -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "c" ]; then
             $GCC -c -o $objname $file $CFLAGS
         elif [ "$FILE_TYPE" = "c++" ]; then
             IS_CPP=1
-            $GPP -c -o $objname $file $CXXFLAGS
+            $GXX -c -o $objname $file $CXXFLAGS
         fi
     done
 
@@ -486,8 +546,6 @@ fi
 clean
 
 # Test the program with Clang.
-gccVer=$(gcc --version | head -n1 | awk '{ print $4; }')
-
 if [ "$cmd" = "application" ]; then
     IS_CPP=0
     OBJS=
@@ -504,26 +562,28 @@ if [ "$cmd" = "application" ]; then
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
 
         if [ "$FILE_TYPE" = "objective-c" ]; then
-            $CLANG -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS \
-                -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
+            $CLANG -c -o $objname $file \
+                -I "${gcc_lib_dir}/${gcc_ver}/include" \
+                -I $GNUSTEP_INCLUDE $CFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "objective-c++" ]; then
             IS_CPP=1
-            $CLANGPP -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS \
-                -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
+            $CLANGXX -c -o $objname $file  \
+                -I "${gcc_lib_dir}/${gcc_ver}/include" \
+                -I $GNUSTEP_INCLUDE $CXXFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "c" ]; then
             $CLANG -c -o $objname $file $CFLAGS
         elif [ "$FILE_TYPE" = "c++" ]; then
             IS_CPP=1
-            $CLANGPP -c -o $objname $file $CXXFLAGS
+            $CLANGXX -c -o $objname $file $CXXFLAGS
         fi
     done
     if [ $IS_CPP -eq 1 ]; then
         LIBS_INTERNAL="-lstdc++"
     fi
     $CLANG -o $dest $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
-        -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
+        -I "${gcc_lib_dir}/${gcc_ver}/include" -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB \
         $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString
 
     args=
@@ -551,26 +611,28 @@ elif [ "$cmd" = "dynamic" ]; then
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
 
         if [ "$FILE_TYPE" = "objective-c" ]; then
-            $CLANG -fPIC -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS \
-                -I $GNUSTEP_INCLUDE -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
+            $CLANG -fPIC -c -o $objname $file \
+                -I $GNUSTEP_INCLUDE -I "${gcc_lib_dir}/${gcc_ver}/include" \
+                -I $GNUSTEP_INCLUDE $CFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "objective-c++" ]; then
             IS_CPP=1
-            $CLANGPP -fPIC -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS \
-                -I $GNUSTEP_INCLUDE -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
+            $CLANGXX -fPIC -c -o $objname $file \
+                -I $GNUSTEP_INCLUDE -I "${gcc_lib_dir}/${gcc_ver}/include" \
+                -I $GNUSTEP_INCLUDE $CXXFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "c" ]; then
             $CLANG -fPIC -c -o $objname $file $CFLAGS
         elif [ "$FILE_TYPE" = "c++" ]; then
             IS_CPP=1
-            $CLANGPP -fPIC -c -o $objname $file $CXXFLAGS
+            $CLANGXX -fPIC -c -o $objname $file $CXXFLAGS
         fi
     done
     if [ $IS_CPP -eq 1 ]; then
         LIBS_INTERNAL="-lstdc++"
     fi
     $CLANG -shared -o "lib${dest}.so" $OBJS $LIBS_INTERNAL -lobjc -lgnustep-base $LIBS \
-        -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
+        -I "${gcc_lib_dir}/${gcc_ver}/include" -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB \
         $CFLAGS $LDFLAGS -fconstant-string-class=NSConstantString -fobjc-exceptions
 elif [ "$cmd" = "static" ]; then
     IS_CPP=0
@@ -584,19 +646,21 @@ elif [ "$cmd" = "static" ]; then
         FILE_TYPE=$(check_file_type $FILE_EXT | cat)
 
         if [ "$FILE_TYPE" = "objective-c" ]; then
-            $CLANG -c -o $objname $file -I $GNUSTEP_INCLUDE $CFLAGS \
-                -I $GNUSTEP_INCLUDE -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
+            $CLANG -c -o $objname $file \
+                -I $GNUSTEP_INCLUDE -I "${gcc_lib_dir}/${gcc_ver}/include" \
+                -I $GNUSTEP_INCLUDE $CFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "objective-c++" ]; then
             IS_CPP=1
-            $CLANGPP -c -o $objname $file -I $GNUSTEP_INCLUDE $CXXFLAGS \
-                -I $GNUSTEP_INCLUDE -I "/usr/lib/gcc/x86_64-linux-gnu/${gccVer}/include" \
+            $CLANGXX -c -o $objname $file \
+                -I $GNUSTEP_INCLUDE -I "${gcc_lib_dir}/${gcc_ver}/include" \
+                -I $GNUSTEP_INCLUDE $CXXFLAGS \
                 -fconstant-string-class=NSConstantString -fobjc-exceptions
         elif [ "$FILE_TYPE" = "c" ]; then
             $CLANG -c -o $objname $file $CFLAGS
         elif [ "$FILE_TYPE" = "c++" ]; then
             IS_CPP=1
-            $CLANGPP -c -o $objname $file $CXXFLAGS
+            $CLANGXX -c -o $objname $file $CXXFLAGS
         fi
     done
     if [ $IS_CPP -eq 1 ]; then
