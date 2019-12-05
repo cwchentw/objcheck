@@ -276,7 +276,7 @@ then
 fi
 
 gcc_lib_dir=$(ls -d /usr/lib/gcc/x86_64-*);
-gcc_ver=$($GCC --version | grep -oP "\d+.\d+.\d+" | head -n1);
+gcc_ver=$($GCC --version | perl -nle "print if m{\d+.\d+.\d+}" | head -n 1);
 
 if [ ! -d "${gcc_lib_dir}/${gcc_ver}/include/objc" ];
 then
@@ -285,14 +285,14 @@ then
 fi
 
 # Check whether `g++` exists on the host.
-if ! command -v $GXX 2>/dev/null 1>&2;
+if ! type $GXX 2>/dev/null 1>&2;
 then
     echo "Please install g++" >&2;
     exit 1
 fi
 
 # Check whether Clang exists on the host.
-if ! command -v $CLANG 2>/dev/null 1>&2;
+if ! type $CLANG 2>/dev/null 1>&2;
 then
     echo "Please install clang" >&2;
     exit 1
