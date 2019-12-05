@@ -275,8 +275,16 @@ then
     exit 1
 fi
 
-gcc_lib_dir=$(ls -d /usr/lib/gcc/x86_64-*);
-gcc_ver=$($GCC --version | perl -nle "print if m{\d+.\d+.\d+}" | head -n 1);
+# Refactor it later.
+gcc_ver_major=$($GCC --version | perl -nle "print \$1 if m{(\d+)};" | head -n 1);
+gcc_ver=$($GCC --version | perl -nle "print \$1 if m{(\d+.\d+.\d+)};" | head -n 1);
+
+if [ $(uname) = "SunOS" ];
+then
+    gcc_lib_dir=$(ls -d "/usr/gcc/${gcc_ver_major}"/lib/gcc/x86_64-*);
+else
+    gcc_lib_dir=$(ls -d /usr/lib/gcc/x86_64-*);
+fi
 
 if [ ! -d "${gcc_lib_dir}/${gcc_ver}/include/objc" ];
 then
@@ -733,12 +741,12 @@ then
     ar rcs "lib${dest}.a" $OBJS;
 fi
 
-if [ "$?" -ne 0 ]; then
+if [ $? -ne 0 ];
+then
     echo "Wrong program compiled by Clang";
     clean;
-    exit 1
+    exit 1;
 fi
 
 clean;
 
-exit 0;
