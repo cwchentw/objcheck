@@ -276,20 +276,29 @@ then
 fi
 
 # Refactor it later.
-gcc_ver_major=$($GCC --version | perl -nle "print \$1 if m{(\d+)};" | head -n 1);
-gcc_ver=$($GCC --version | perl -nle "print \$1 if m{(\d+.\d+.\d+)};" | head -n 1);
-
-if [ $(uname) = "SunOS" ];
+if [ $(uname) = "FreeBSD" ];
 then
-    gcc_lib_dir=$(ls -d "/usr/gcc/${gcc_ver_major}"/lib/gcc/x86_64-*);
+    if [ ! -d /usr/local/include/objc ];
+    then
+        echo "Please install gobjc" >&2;
+        exit 1;
+    fi
 else
-    gcc_lib_dir=$(ls -d /usr/lib/gcc/x86_64-*);
-fi
+    gcc_ver_major=$($GCC --version | perl -nle "print \$1 if m{(\d+)};" | head -n 1);
+    gcc_ver=$($GCC --version | perl -nle "print \$1 if m{(\d+.\d+.\d+)};" | head -n 1);
 
-if [ ! -d "${gcc_lib_dir}/${gcc_ver}/include/objc" ];
-then
-    echo "Please install gobjc" >&2;
-    exit 1;
+    if [ $(uname) = "SunOS" ];
+    then
+        gcc_lib_dir=$(ls -d "/usr/gcc/${gcc_ver_major}"/lib/gcc/x86_64-*);
+    else
+        gcc_lib_dir=$(ls -d /usr/lib/gcc/x86_64-*);
+    fi
+
+    if [ ! -d "${gcc_lib_dir}/${gcc_ver}/include/objc" ];
+    then
+        echo "Please install gobjc" >&2;
+        exit 1;
+    fi
 fi
 
 # Check whether `g++` exists on the host.
@@ -325,7 +334,7 @@ EOF
 );
 
 # Check whether GNUstep exists on the host.
-temp="$(mktemp --suffix .m)";
+temp="$(mktemp).m";
 echo "$helloworld" > "$temp";
 $GCC -o $dest "$temp" -lobjc -lgnustep-base $LIBS $CFLAGS \
     -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $LDFLAGS \
@@ -365,7 +374,7 @@ EOFPP
 );
 
 # Check GNUstep with Objective-C++ on the host.
-temp="$(mktemp --suffix .mm)";
+temp="$(mktemp).mm";
 echo "$helloworldpp" > "$temp";
 $GXX -o $dest "$temp" -lobjc -lgnustep-base $LIBS $CXXFLAGS \
     -I $GNUSTEP_INCLUDE -L $GNUSTEP_LIB $LDFLAGS \
