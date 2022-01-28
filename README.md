@@ -98,4 +98,4 @@ All environment variables are optional, set with sensible default values.
 
 ## License
 
-Copyright 2019, Michael Chen; licensed under [MIT](https://opensource.org/licenses/MIT).
+Copyright 2019 (c) Michelle Chen. Licensed under [MIT](https://opensource.org/licenses/MIT)
